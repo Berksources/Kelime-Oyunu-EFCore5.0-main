@@ -1,40 +1,38 @@
 @model FourWordViewModel
 
 @{
-    ViewData["Title"] = "Create-Four";
+    ViewData["Title"] = "Update-Four";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Four</h1>
 
-<h4>FourWord</h4>
-<hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="PostFourWord">
+        <form asp-action="UpdateFourWord">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @foreach(var item in Model.FourWordOnly)
+            @foreach(var item in Model.FourWordsOnly)
             {
             <input asp-for="@item.FourWordID" hidden value="@item.FourWordID" />
             <div class="form-group">
-                <label asp-for="FourWord.FourWordQuestion" class="control-label"></label>
-                <input asp-for="FourWord.FourWordQuestion"  value="@item.FourWordQuestion" class="form-control" />
-                <span asp-validation-for="FourWord.FourWordQuestion" class="text-danger"></span>
+                <label asp-for="@item.FourWordQuestion" class="control-label"></label>
+                <input asp-for="@item.FourWordQuestion"  value="@item.FourWordQuestion" class="form-control" />
+                <span asp-validation-for="@item.FourWordQuestion" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FourWord.FourWordAnswer" class="control-label"></label>
-                <input asp-for="FourWord.FourWordAnswer" value="@item.FourWordAnswer" class="form-control" />
-                <span asp-validation-for="FourWord.FourWordAnswer" class="text-danger"></span>
+                <label asp-for="@item.FourWordAnswer" class="control-label"></label>
+                <input asp-for="@item.FourWordAnswer" value="@item.FourWordAnswer" class="form-control" />
+                <span asp-validation-for="@item.FourWordAnswer" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FourWord.FourWordData" class="control-label"></label>
-                <input asp-for="FourWord.FourWordData" value="@item.FourWordData" class="form-control" />
-                <span asp-validation-for="FourWord.FourWordData" class="text-danger"></span>
+                <label asp-for="@item.FourWordData" class="control-label"></label>
+                <input asp-for="@item.FourWordData" value="@item.FourWordData" class="form-control" />
+                <span asp-validation-for="@item.FourWordData" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FourWord.FourWordScore" class="control-label"></label>
-                <input asp-for="FourWord.FourWordScore" value="@item.FourWordScore" class="form-control" />
-                <span asp-validation-for="FourWord.FourWordScore" class="text-danger"></span>
+                <label asp-for="@item.FourWordScore" class="control-label"></label>
+                <input asp-for="@item.FourWordScore" value="@item.FourWordScore" class="form-control" />
+                <span asp-validation-for="@item.FourWordScore" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="UpdateFourWord" class="btn btn-primary" />

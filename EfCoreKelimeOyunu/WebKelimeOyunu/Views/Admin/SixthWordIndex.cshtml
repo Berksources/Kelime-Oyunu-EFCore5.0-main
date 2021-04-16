@@ -1,0 +1,43 @@
+﻿@model SixthWordViewModel
+
+@{
+    ViewData["Title"] = "Index-Sixth";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Sixth</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <h2>6 HARFLİ CEVAPLAR</h2>s
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>SORU</th>
+                <th>CEVAP</th>
+                <th>DATA</th>
+                <th>PUAN</th>
+            </tr>
+            @foreach (var item in Model.SixthWords)
+            {
+
+                <tr>
+                    <td>@item.SixthWordID</td>
+                    <td>@item.SixthWordQuestion</td>
+                    <td>@item.SixthWordAnswer</td>
+                    <td>@item.SixthWordData</td>
+                    <td>@item.SixthWordScore</td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Anasayfa</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

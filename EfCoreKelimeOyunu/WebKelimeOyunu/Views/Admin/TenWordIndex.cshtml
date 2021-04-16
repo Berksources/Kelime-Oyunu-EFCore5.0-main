@@ -1,0 +1,42 @@
+﻿@model TenWordViewModel
+
+@{
+    ViewData["Title"] = "Index-Ten";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Ten</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <h2>10 HARFLİ CEVAPLAR</h2>s
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>SORU</th>
+                <th>CEVAP</th>
+                <th>DATA</th>
+                <th>PUAN</th>
+            </tr>
+            @foreach (var item in Model.TenWords)
+            {
+                <tr>
+                    <td>@item.TenWordID</td>
+                    <td>@item.TenWordQuestion</td>
+                    <td>@item.TenWordAnswer</td>
+                    <td>@item.TenWordData</td>
+                    <td>@item.TenWordScore</td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Anasayfa</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

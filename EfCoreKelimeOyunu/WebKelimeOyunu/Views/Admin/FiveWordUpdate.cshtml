@@ -13,23 +13,23 @@
     <div class="col-md-4">
         <form asp-action="UpdateFiveWord">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @foreach(var item in Model.FiveWordOnly)
+            @foreach(var item in Model.FifthWordOnly)
             {
-            <input asp-for="@item.FifthWordID" hidden value="@item.FiveWordID" />
+            <input asp-for="@item.FifthWordID" hidden value="@item.FifthWordID" />
             <div class="form-group">
                 <label asp-for="@item.FifthWordQuestion" class="control-label"></label>
-                <input asp-for="@item.FifthWordQuestion"  value="@item.FiveWordQuestion" class="form-control" />
-                <span asp-validation-for="FifthWord.FifthQuestion" class="text-danger"></span>
+                <input asp-for="@item.FifthWordQuestion"  value="@item.FifthWordQuestion" class="form-control" />
+                <span asp-validation-for="@item.FifthWordQuestion" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="@item.FifthWordAnswer" class="control-label"></label>
                 <input asp-for="@item.FifthWordAnswer" value="@item.FifthWordAnswer" class="form-control" />
-                <span asp-validation-for="FifthWord.FifthWordAnswer" class="text-danger"></span>
+                <span asp-validation-for="@item.FifthWordAnswer" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="@item.FifthWordData" class="control-label"></label>
                 <input asp-for="@item.FifthWordData" value="@item.FifthWordData" class="form-control" />
-                <span asp-validation-for="FifthWord.FifthWordData" class="text-danger"></span>
+                <span asp-validation-for="@item.FifthWordData" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="@item.FifthWordScore" class="control-label"></label>
