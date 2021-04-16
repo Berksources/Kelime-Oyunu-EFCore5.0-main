@@ -1,0 +1,102 @@
+﻿@model IEnumerable<Entity.KelimeOyunu.User>
+
+@{
+    ViewData["Title"] = "Users";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Users</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserSurname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserPassword)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEMail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserLastScore)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserIsActive)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserIsEmailConfirmed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserToken)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserRole)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataGuidID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ModifiedDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserSurname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserPassword)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserEMail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserLastScore)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserIsActive)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserIsEmailConfirmed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserToken)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserRole.UserRoleID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataGuidID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ModifiedDate)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.UserID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.UserID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.UserID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

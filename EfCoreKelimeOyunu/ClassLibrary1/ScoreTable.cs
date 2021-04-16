@@ -1,0 +1,33 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+
+namespace Entity.KelimeOyunu
+{
+    public class ScoreTable:Base
+    {
+        [Key]
+        public int ScoreTableID { get; set; }
+        public int UserID { get; set; }
+        [Required]
+        public int ScoreData { get; set; }
+        public User User { get; set; }
+    }
+    public class ScoreTableConfiguration : IEntityTypeConfiguration<ScoreTable>
+    {
+        public void Configure(EntityTypeBuilder<ScoreTable> builder)
+        {
+            builder.HasKey(user => user.ScoreTableID);//Primary Key Yapılandırması
+
+            /// One To Many(User-To-ScoreTables)
+            builder.HasOne(cmp => cmp.User)
+                .WithMany(cmpu => cmpu.ScoreTables)
+                .HasForeignKey(company => company.ScoreTableID)
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
+        }
+    }
+}
