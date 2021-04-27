@@ -29,6 +29,7 @@ namespace Entity.KelimeOyunu
             builder.HasData(new SixthWord
             {
                 SixthWordID = 1,
+                SixthWordAnswer= "Yakınma veya hafifseme yoluyla şimdiki zaman",
                 SixthWordQuestion = "Zamane",
                 SixthWordData = "Zamane",
                 SixthWordScore = 600

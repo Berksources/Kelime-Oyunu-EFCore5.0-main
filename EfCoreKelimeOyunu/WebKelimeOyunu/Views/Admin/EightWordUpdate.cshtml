@@ -12,25 +12,25 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @foreach (var item in Model.EightWordOnly)
             {
-                <input asp-for="@item.EightWordID" hidden value="@item.EightWordID" />
+                <input asp-for="@item.EightWordID" type="hidden" value="@item.EightWordID" />
                 <div class="form-group">
                     <label asp-for="@item.EightWordQuestion" class="control-label"></label>
-                    <input asp-for="@item.EightWordQuestion" value="@item.EightWordQuestion" class="form-control" />
+                    <input asp-for="@item.EightWordQuestion" name="EightWordQuestion" value="@item.EightWordQuestion" class="form-control" />
                     <span asp-validation-for="@item.EightWordQuestion" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="@item.EightWordAnswer" class="control-label"></label>
-                    <input asp-for="@item.EightWordAnswer" value="@item.EightWordAnswer" class="form-control" />
+                    <input asp-for="@item.EightWordAnswer" name="EightWordAnswer" value="@item.EightWordAnswer" class="form-control" />
                     <span asp-validation-for="@item.EightWordAnswer" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="@item.EightWordData" class="control-label"></label>
-                    <input asp-for="@item.EightWordData" value="@item.EightWordData" class="form-control" />
+                    <input asp-for="@item.EightWordData" name="EightWordData" value="@item.EightWordData" class="form-control" />
                     <span asp-validation-for="@item.EightWordData" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="@item.EightWordScore" class="control-label"></label>
-                    <input asp-for="@item.EightWordScore" value="@item.EightWordScore" class="form-control" />
+                    <input asp-for="@item.EightWordScore" name="EightWordScore" value="@item.EightWordScore" class="form-control" />
                     <span asp-validation-for="@item.EightWordScore" class="text-danger"></span>
                 </div>
                 <div class="form-group">

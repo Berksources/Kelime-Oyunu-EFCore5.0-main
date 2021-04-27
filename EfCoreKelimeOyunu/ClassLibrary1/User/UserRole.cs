@@ -25,14 +25,12 @@ namespace Entity.KelimeOyunu
             {
                 UserRoleName = "Admin",
                 UserRoleID = 1
-            }
-            );
+            });
             builder.HasData(new UserRole
             {
                 UserRoleName = "Oyuncu",
                 UserRoleID = 2
-            }
-           );
+            });
         }
     }
 }

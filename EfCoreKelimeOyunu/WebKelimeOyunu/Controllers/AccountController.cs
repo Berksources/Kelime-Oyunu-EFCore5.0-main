@@ -84,7 +84,6 @@ namespace WebKelimeOyunu.Controllers
                                    new Claim(ClaimTypes.Role,"Admin"),
                                    new Claim(ClaimTypes.NameIdentifier,ID),
                                    new Claim(ClaimTypes.Name,userData.UserName + userData.UserSurname)
-
                                 };
                             var userIdentity = new ClaimsIdentity(claims, "UserIdentity");
                             ClaimsPrincipal principal = new ClaimsPrincipal(userIdentity);
@@ -267,6 +266,150 @@ namespace WebKelimeOyunu.Controllers
         public IActionResult AccessDenied()
         {
             return View();
+        }
+
+
+
+        [AllowAnonymous]
+        public IActionResult ForgotPassword()
+        {
+            if (getCurrentUserClaimRole() != null)
+            {
+                if (getCurrentUserClaimRole() == "Admin")
+                {
+                    return RedirectToAction("Index", "Admin");
+                }
+                else if (getCurrentUserClaimRole() == "Gamer")
+                {
+                    return RedirectToAction("Index", "Gamer");
+                }
+            }
+            return View();
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult ForgotPassword(ForgotMyPasswordViewModel forgotMyPassword)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = dBContext.Users.FirstOrDefault(x => x.UserEMail == forgotMyPassword.Email);
+                if (user != null)
+                {
+                    if (user.UserIsEmailConfirmed && user.UserToken == null)
+                    {
+                        var token = _tokenGenerator.GetToken(null);
+                        user.UserToken = token;
+                        _unitOfWorkUser.RepositoryUser.Update(user);
+                        _unitOfWorkUser.Complete();
+                        string mailSubject = "ŞİFRE YENİLEME";
+                        var passwordResetLink =
+                            Url.Action("ResetPassword", "Account", new
+                            {
+                                email = forgotMyPassword.Email,
+                                token = token
+                            }, Request.Scheme
+                        );
+                        var messageModel = new MessageModel(user.UserName, user.UserSurname, user.UserEMail, mailSubject, passwordResetLink, "forgot-password", null);
+                        _emailSender.EmailSendWithMimeAsync(messageModel);
+                        TempData["Message"] = "Şifre sıfırlama bağlantınız E-mail adresinize başarıyla yollanmıştır !!";
+                        TempData["JS"] = "showSuccess();";
+                        return RedirectToAction("Login", new { isForgotPassword = true });
+                    }
+                    else
+                    {
+                        ViewBag.Message = "Hesabınız aktif değil ya da doğrulanmamış! Lütfen hesabınızı doğrulayınız.";
+                        ViewBag.JS = "showControllerError();";
+                        return View();
+                    }
+                }
+                else
+                {
+                    ViewBag.Message = "Girmiş olduğunuz e-mail adresi sistemimizde kayıtlı değil!";
+                    ViewBag.JS = "showControllerError();";
+                    return View();
+                }
+            }
+            else
+            {
+                ViewBag.Message = "Hatalı veri girişi!";
+                ViewBag.JS = "showControllerError();";
+                return View(forgotMyPassword);
+            }
+        }
+
+
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            if (getCurrentUserClaimRole() != null)
+            {
+                if (getCurrentUserClaimRole() == "Admin")
+                {
+                    return RedirectToAction("Index", "Admin");
+                }
+                else if (getCurrentUserClaimRole() == "Gamer")
+                {
+                    return RedirectToAction("Index", "Gamer");
+                }
+            }
+            else
+            {
+                if (token != null && email != null)
+                {
+                    var resetPasswordModel = new ResetPasswordViewModel { Token = token, Email = email };
+                    return View(resetPasswordModel);
+                }
+                else
+                {
+                    return RedirectToAction("AccessDenied", "Account");
+                }
+            }
+            return View();
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult ResetPassword(ResetPasswordViewModel resetPasswordModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = dBContext.Users.FirstOrDefault(
+                x => x.UserEMail == resetPasswordModel.Email &&
+                x.UserToken == resetPasswordModel.Token);
+                if (user != null)
+                {
+                    if (resetPasswordModel.Password == resetPasswordModel.ConfirmPassword)
+                    {
+                        var hashedPassword = _passwordHashing.PasswordHash(resetPasswordModel.Password);
+                        user.UserPassword = hashedPassword;
+                        user.UserToken = null;
+                        _unitOfWorkUser.RepositoryUser.Update(user);
+                        _unitOfWorkUser.Complete();
+                        return RedirectToAction("Login", new { isResettedPassword = true });
+                    }
+                    else
+                    {
+                        ViewBag.Message = "Girmiş olduğunuz şifreler eşleşmemektedir! Lütfen tekrar deneyiniz.";
+                        ViewBag.JS = "showControllerError();";
+                        return View();
+                    }
+                }
+                else
+                {
+                    ViewBag.Message = "Hatalı İşlem! Lütfen tekrar deneyiniz.";
+                    ViewBag.JS = "showControllerError();";
+                    return View();
+                }
+            }
+            else
+            {
+                ViewBag.Message = "Girmiş olduğunuz verilerde hata var! Lütfen tekrar deneyiniz.";
+                ViewBag.JS = "showControllerError();";
+                return View();
+            }
         }
     }
 }

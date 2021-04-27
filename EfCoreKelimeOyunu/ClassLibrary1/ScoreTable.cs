@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Entity.KelimeOyunu
@@ -11,6 +12,7 @@ namespace Entity.KelimeOyunu
     {
         [Key]
         public int ScoreTableID { get; set; }
+        [ForeignKey("UserID")]
         public int UserID { get; set; }
         [Required]
         public int ScoreData { get; set; }
@@ -28,6 +30,13 @@ namespace Entity.KelimeOyunu
                 .HasForeignKey(company => company.ScoreTableID)
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired(false);
+
+            builder.HasData(new ScoreTable
+            {
+                ScoreTableID=1,
+                UserID=2,
+                ScoreData=7600
+            });
         }
     }
 }

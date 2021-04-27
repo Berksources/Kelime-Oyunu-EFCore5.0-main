@@ -23,6 +23,7 @@ namespace BusinessLayer
             RepositoryUser = new RepositoryUser<T>(_context);
             RepositoryUserRole = new RepositoryUserRole<T>(_context);
             RepositoryScoreTable = new RepositoryScoreTable<T>(_context);
+            RepositoryGameVariant = new RepositoryGameVariant<T>(_context);
 
         }
         public IRepository<T> Repository { get; private set; }
@@ -36,6 +37,8 @@ namespace BusinessLayer
         public IRepositoryUser<T> RepositoryUser { get; private set; }
         public IRepositoryUserRole<T> RepositoryUserRole { get; private set; }
         public IRepositoryScoreTable<T> RepositoryScoreTable { get; private set; }
+        public IRepositoryGameVariant<T> RepositoryGameVariant { get; private set; }
+
         public int Complete()
         {
             return _context.SaveChanges();

@@ -1,0 +1,221 @@
+﻿@model GameViewModel
+
+@{
+    ViewData["Title"] = "MyScores";
+    Layout = "~/Views/Shared/_LayoutGamer.cshtml";
+}
+
+@{
+
+    Random rnd = new Random();
+    int num = rnd.Next(1, 20);
+    <div class="container mt-4">
+        @Html.Hidden("RedirectTo", Url.Action("SureBitti", "Gamer"))   @*///Süre Bitince Yönlendirileceği kısım*@
+        <div class="form-row mb-12">
+            <div class="col-7">
+                <form asp-action="KontrolEt">
+                    @foreach (var conf in Model.GameVariants)
+                    {
+                        if (conf.GameQuestionCount == 14)
+                        {
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    Tebrikler yarışmayı @TempData["Message"] puan ile tamamladınız!
+                                </div>
+                            </div>
+                        }
+                        if (conf.GameQuestionCount == 0 || conf.GameQuestionCount == 1)
+                        {
+                            foreach (var four in Model.FourWords.Where(x => x.FourWordID == num))
+                            {
+                                <div class="form-group">
+                                    <div class="col">
+                                        <input asp-for="@four.FourWordID" name="FourWordID" type="hidden" value="@four.FourWordID" />
+                                        <input asp-for="@four.FourWordQuestion" name="FourWordQuestion" type="hidden" value="@four.FourWordQuestion" />
+                                        <input asp-for="@four.FourWordAnswer" name="FourWordAnswer" type="hidden" value="@four.FourWordAnswer" />
+                                        <input asp-for="@four.FourWordData" name="FourWordData" type="hidden" value="@four.FourWordData" />
+                                        <input asp-for="@four.FourWordScore" name="FourWordScore" type="hidden" value="@four.FourWordScore" />
+                                        <h5>4 Harfli Kelimeler</h5>
+                                        <input name="questionCount" type="hidden" value="@four.FourWordScore" />
+                                        <label class="control-label">@four.FourWordQuestion</label>
+                                        <input name="answerUser" class="form-control" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="control-label">Skorunuz : @conf.GameScoreCount</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" value="KontrolEt" class="btn btn-primary" />
+                                </div>
+                            }
+                        }
+                        else if (conf.GameQuestionCount == 2 || conf.GameQuestionCount == 3)
+                        {
+                            foreach (var four in Model.FifthWords.Where(x => x.FifthWordID == num))
+                            {
+                                <div class="form-group">
+                                    <div class="col">
+                                        <input asp-for="@four.FifthWordID" name="FifthWordID" type="hidden" value="@four.FifthWordID" />
+                                        <input asp-for="@four.FifthWordQuestion" name="FifthWordQuestion" type="hidden" value="@four.FifthWordQuestion" />
+                                        <input asp-for="@four.FifthWordAnswer" name="FifthWordAnswer" type="hidden" value="@four.FifthWordAnswer" />
+                                        <input asp-for="@four.FifthWordData" name="FifthWordData" type="hidden" value="@four.FifthWordData" />
+                                        <input asp-for="@four.FifthWordScore" name="FifthWordScore" type="hidden" value="@four.FifthWordScore" />
+                                        <h5>5 Harfli Kelimeler</h5>
+                                        <input name="questionCount" type="hidden" value="@four.FifthWordScore" />
+                                        <label class="control-label">@four.FifthWordQuestion</label>
+                                        <input name="answerUser" class="form-control" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="control-label">Skorunuz : @conf.GameScoreCount</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" value="KontrolEt" class="btn btn-primary" />
+                                </div>
+                            }
+                        }
+                        else if (conf.GameQuestionCount == 4 || conf.GameQuestionCount == 5)
+                        {
+                            foreach (var four in Model.SixthWords.Where(x => x.SixthWordID == num))
+                            {
+                                <div class="form-group">
+                                    <div class="col">
+                                        <input asp-for="@four.SixthWordID" name="SixthWordID" type="hidden" value="@four.SixthWordID" />
+                                        <input asp-for="@four.SixthWordQuestion" name="SixthWordQuestion" type="hidden" value="@four.SixthWordQuestion" />
+                                        <input asp-for="@four.SixthWordAnswer" name="SixthWordAnswer" type="hidden" value="@four.SixthWordAnswer" />
+                                        <input asp-for="@four.SixthWordData" name="SixthWordData" type="hidden" value="@four.SixthWordData" />
+                                        <input asp-for="@four.SixthWordScore" name="SixthWordScore" type="hidden" value="@four.SixthWordScore" />
+                                        <h5>6 Harfli Kelimeler</h5>
+                                        <input name="questionCount" type="hidden" value="@four.SixthWordScore" />
+                                        <label class="control-label">@four.SixthWordQuestion</label>
+                                        <input name="answerUser" class="form-control" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="control-label">Skorunuz : @conf.GameScoreCount</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" value="KontrolEt" class="btn btn-primary" />
+                                </div>
+                            }
+                        }
+                        else if (conf.GameQuestionCount == 6 || conf.GameQuestionCount == 7)
+                        {
+                            foreach (var four in Model.SevenWords.Where(x => x.SevenWordID == num))
+                            {
+                                <div class="form-group">
+                                    <div class="col">
+                                        <input asp-for="@four.SevenWordID" name="SevenWordID" type="hidden" value="@four.SevenWordID" />
+                                        <input asp-for="@four.SevenWordQuestion" name="SevenWordQuestion" type="hidden" value="@four.SevenWordQuestion" />
+                                        <input asp-for="@four.SevenWordAnswer" name="SevenWordAnswer" type="hidden" value="@four.SevenWordAnswer" />
+                                        <input asp-for="@four.SevenWordData" name="SevenWordData" type="hidden" value="@four.SevenWordData" />
+                                        <input asp-for="@four.SevenWordScore" name="SevenWordScore" type="hidden" value="@four.SevenWordScore" />
+                                        <h5>7 Harfli Kelimeler</h5>
+                                        <input name="questionCount" type="hidden" value="@four.SevenWordScore" />
+                                        <label class="control-label">@four.SevenWordQuestion</label>
+                                        <input name="answerUser" class="form-control" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="control-label">Skorunuz : @conf.GameScoreCount</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" value="KontrolEt" class="btn btn-primary" />
+                                </div>
+                            }
+                        }
+                        else if (conf.GameQuestionCount == 8 || conf.GameQuestionCount == 9)
+                        {
+                            foreach (var four in Model.EightWords.Where(x => x.EightWordID == num))
+                            {
+                                <div class="form-group">
+                                    <div class="col">
+                                        <input asp-for="@four.EightWordID" name="EightWordID" type="hidden" value="@four.EightWordID" />
+                                        <input asp-for="@four.EightWordQuestion" name="EightWordQuestion" type="hidden" value="@four.EightWordQuestion" />
+                                        <input asp-for="@four.EightWordAnswer" name="EightWordAnswer" type="hidden" value="@four.EightWordAnswer" />
+                                        <input asp-for="@four.EightWordData" name="EightWordData" type="hidden" value="@four.EightWordData" />
+                                        <input asp-for="@four.EightWordScore" name="EightWordScore" type="hidden" value="@four.EightWordScore" />
+                                        <h5>8 Harfli Kelimeler</h5>
+                                        <input name="questionCount" type="hidden" value="@four.EightWordScore" />
+                                        <label class="control-label">@four.EightWordQuestion</label>
+                                        <input name="answerUser" class="form-control" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="control-label">Skorunuz : @conf.GameScoreCount</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" value="KontrolEt" class="btn btn-primary" />
+                                </div>
+                            }
+                        }
+                        else if (conf.GameQuestionCount == 10 || conf.GameQuestionCount == 11)
+                        {
+                            foreach (var four in Model.NineWords.Where(x => x.NineWordID == num))
+                            {
+                                <div class="form-group">
+                                    <div class="col">
+                                        <input asp-for="@four.NineWordID" name="NineWordID" type="hidden" value="@four.NineWordID" />
+                                        <input asp-for="@four.NineWordQuestion" name="NineWordQuestion" type="hidden" value="@four.NineWordQuestion" />
+                                        <input asp-for="@four.NineWordAnswer" name="NineWordAnswer" type="hidden" value="@four.NineWordAnswer" />
+                                        <input asp-for="@four.NineWordData" name="NineWordData" type="hidden" value="@four.NineWordData" />
+                                        <input asp-for="@four.NineWordScore" name="NineWordScore" type="hidden" value="@four.NineWordScore" />
+                                        <h5>9 Harfli Kelimeler</h5>
+                                        <input name="questionCount" type="hidden" value="@four.NineWordScore" />
+                                        <label class="control-label">@four.NineWordQuestion</label>
+                                        <input name="answerUser" class="form-control" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="control-label">Skorunuz : @conf.GameScoreCount</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" value="KontrolEt" class="btn btn-primary" />
+                                </div>
+                            }
+                        }
+                        else if (conf.GameQuestionCount == 12 || conf.GameQuestionCount == 13)
+                        {
+                            foreach (var four in Model.TenWords.Where(x => x.TenWordID == num))
+                            {
+                                <div class="form-group">
+                                    <div class="col">
+                                        <input asp-for="@four.TenWordID" name="TenWordID" type="hidden" value="@four.TenWordID" />
+                                        <input asp-for="@four.TenWordQuestion" name="TenWordQuestion" type="hidden" value="@four.TenWordQuestion" />
+                                        <input asp-for="@four.TenWordAnswer" name="TenWordAnswer" type="hidden" value="@four.TenWordAnswer" />
+                                        <input asp-for="@four.TenWordData" name="TenWordData" type="hidden" value="@four.TenWordData" />
+                                        <input asp-for="@four.TenWordScore" name="TenWordScore" type="hidden" value="@four.TenWordScore" />
+                                        <h5>10 Harfli Kelimeler</h5>
+                                        <input name="questionCount" type="hidden" value="@four.TenWordScore" />
+                                        <input name="lastScore" type="hidden" value="@conf.GameScoreCount" />
+                                        <label class="control-label">@four.TenWordQuestion</label>
+                                        <input name="answerUser" class="form-control" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="control-label">Skorunuz : @conf.GameScoreCount</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" value="KontrolEt" class="btn btn-primary" />
+                                </div>
+                            }
+                        }
+                    }
+                </form>
+            </div>
+            <div class="col-5">
+                <form asp-action="YeniOyun">
+                    <div class="form-group">
+                        <label class="control-label">Oyuna baştan başlamak istiyorsanız</label>
+                        <div>
+                            <input type="submit" value="YeniOyun" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-2">
+                <div id="app"></div>
+            </div>
+        </div>
+    </div>
+}

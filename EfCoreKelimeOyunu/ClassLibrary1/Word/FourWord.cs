@@ -19,6 +19,11 @@ namespace Entity.KelimeOyunu
         public string FourWordData { get; set; }//Veri
         [Required]
         public int FourWordScore { get; set; }
+
+        public IEnumerable<FourWord> ToList()
+        {
+            throw new NotImplementedException();
+        }
     }
     public class FourWordConfiguration : IEntityTypeConfiguration<FourWord>
     {

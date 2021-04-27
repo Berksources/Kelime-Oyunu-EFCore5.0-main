@@ -12,6 +12,7 @@ namespace DataAccesLayer
         IEnumerable<User> GetUsersByEmail(string userEmail);
         IEnumerable<User> GetGamers();
         IEnumerable<User> GetAdmins();
+        IEnumerable<User> GetByIDForUpdate(int ID);
     }
     public class RepositoryUser<T> : Repository<User>, IRepositoryUser<T>
     {
@@ -28,6 +29,11 @@ namespace DataAccesLayer
         public IEnumerable<User> GetAdmins()
         {
             return KelimeOyunuDBContext.Users.Where(x => x.UserRoleID == 1).ToList();
+        }
+
+        public IEnumerable<User> GetByIDForUpdate(int ID)
+        {
+            return KelimeOyunuDBContext.Users.Where(x => x.UserID == ID).ToList();
         }
     }
 }

@@ -5,31 +5,29 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Seven</h1>
 
-<h4>Seven</h4>
-<hr />
+<h4>7 Harfli Kelime Oluþtur</h4>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="PostSevenWord">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="SevenWord.SevenWordQuestion" class="control-label"></label>
+                <label asp-for="SevenWord.SevenWordQuestion" class="control-label">Soru</label>
                 <input asp-for="SevenWord.SevenWordQuestion" class="form-control" />
                 <span asp-validation-for="SevenWord.SevenWordQuestion" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SevenWord.SevenWordAnswer" class="control-label"></label>
+                <label asp-for="SevenWord.SevenWordAnswer" class="control-label">Cevap</label>
                 <input asp-for="SevenWord.SevenWordAnswer" class="form-control" />
                 <span asp-validation-for="SevenWord.SevenWordAnswer" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SevenWord.SevenWordData" class="control-label"></label>
+                <label asp-for="SevenWord.SevenWordData" class="control-label">Cevap Kontrol</label>
                 <input asp-for="SevenWord.SevenWordData" class="form-control" />
                 <span asp-validation-for="SevenWord.SevenWordData" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SevenWord.SevenWordScore" class="control-label"></label>
+                <label asp-for="SevenWord.SevenWordScore" class="control-label">Skor</label>
                 <input asp-for="SevenWord.SevenWordScore" class="form-control" />
                 <span asp-validation-for="SevenWord.SevenWordScore" class="text-danger"></span>
             </div>

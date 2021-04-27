@@ -18,6 +18,7 @@ namespace DataAccesLayer
         IRepositoryUser<T> RepositoryUser { get; }
         IRepositoryUserRole<T> RepositoryUserRole { get; }
         IRepositoryScoreTable<T> RepositoryScoreTable { get; }
+        IRepositoryGameVariant<T> RepositoryGameVariant { get; }
         int Complete();//Save Changes
     }
 }

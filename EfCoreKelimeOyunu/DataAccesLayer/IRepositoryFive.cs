@@ -14,7 +14,6 @@ namespace DataAccesLayer
     public class RepositoryFive<T> : Repository<FifthWord>, IRepositoryFive<T>
     {
         public RepositoryFive(KelimeOyunuDBContext context) : base(context) { }
-
         public IEnumerable<FifthWord> GetFifthWordByID(int ID)
         {
             return KelimeOyunuDBContext.FifthWords.Where(x => x.FifthWordID == ID)

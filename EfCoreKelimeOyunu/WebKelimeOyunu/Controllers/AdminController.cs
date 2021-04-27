@@ -3,6 +3,7 @@ using Entity.KelimeOyunu;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Security.Claims;
 using WebKelimeOyunu.Models;
 
 namespace WebKelimeOyunu.Controllers
@@ -10,6 +11,7 @@ namespace WebKelimeOyunu.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminController : BaseController
     {
+        #region /*IUnitOfWork*/
         private readonly IUnitOfWork<User> _unitOfWorkUser;
         private readonly IUnitOfWork<UserRole> _unitOfWorkUserRole;
         private readonly IUnitOfWork<ScoreTable> _unitOfWorkScoreTable;
@@ -20,8 +22,9 @@ namespace WebKelimeOyunu.Controllers
         private readonly IUnitOfWork<EightWord> _unitOfWorkEight;
         private readonly IUnitOfWork<NineWord> _unitOfWorkNine;
         private readonly IUnitOfWork<TenWord> _unitOfWorkTen;
+        #endregion
 
-
+        #region /*ctor*/
         public AdminController
         (
         IUnitOfWork<User> unitOfWorkUser,
@@ -42,29 +45,98 @@ namespace WebKelimeOyunu.Controllers
             _unitOfWorkSeven = unitOfWorkSeven;
             _unitOfWorkEight = unitOfWorkEight;
             _unitOfWorkNine = unitOfWorkNine;
+            _unitOfWorkTen = unitOfWorkTen;
             _unitOfWorkUser = unitOfWorkUser;
             _unitOfWorkUserRole = unitOfWorkUserRole;
             _unitOfWorkScoreTable = unitOfWorkScoreTable;
         }
+        #endregion
         //
         public IActionResult Index()
         {
-
             return View();
         }
-        //
-
-        //
         public IActionResult Users()
         {
             var allAdmin = _unitOfWorkUser.RepositoryUser.GetAdmins();
             var allGamers = _unitOfWorkUser.RepositoryUser.GetGamers();
+            var allUser = _unitOfWorkUser.RepositoryUser.GetAll();
             var userViewModel = new UserViewModel
             {
                 Gamers = allGamers,
-                Admins = allAdmin
+                Admins = allAdmin,
+                AllUsers = allUser
             };
             return View(userViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateUsers(User user)
+        {
+            user.CreatedDate = DateTime.Now;
+            if (ModelState.IsValid)
+            {
+                int request;
+                user.ModifiedDate = DateTime.Now;
+                _unitOfWorkUser.RepositoryUser.Update(user);
+                request = HttpContext.Response.StatusCode;
+                if (request == 200)
+                {
+                    TempData["Message"] = "Kullanıcı güncelleme işleminiz başarılı!";
+                    TempData["JS"] = "showSuccess();";
+                    _unitOfWorkUser.Complete();
+                    return RedirectToAction("Users");
+                }
+                else
+                {
+                    TempData["Message"] = "Kullanıcı güncelleme işleminiz başarısız!";
+                    TempData["JS"] = "showError();";
+                }
+                return RedirectToAction("UsersUpdateIndex", new { id = user.UserID });
+            }
+            else
+            {
+                TempData["Message"] = "Güncellemek istediğiniz veri hatalı!";
+                TempData["JS"] = "showError();";
+                return RedirectToAction("UsersUpdateIndex", new { id = user.UserID });
+            }
+        }
+        public IActionResult UsersUpdateIndex(int ID)
+        {
+            var updateUser = _unitOfWorkUser.RepositoryUser.GetByIDForUpdate(ID);
+            var userViewModel = new UserViewModel
+            {
+                UserUpdate = updateUser
+            };
+            return View(userViewModel);
+        }
+        [HttpPost]
+        public IActionResult DeleteUserByID(int ID)
+        {
+            if (ModelState.IsValid)
+            {
+                int request;
+                _unitOfWorkUser.RepositoryUser.DeleteID(ID);
+                request = HttpContext.Response.StatusCode;
+                if (request == 200)
+                {
+                    TempData["Message"] = "Kullanıcı silme işleminiz başarılı!";
+                    TempData["JS"] = "showSuccess();";
+                    _unitOfWorkUser.Complete();
+                }
+                else
+                {
+                    TempData["Message"] = "Kullanıcı silme işleminiz başarısız!";
+                    TempData["JS"] = "showError();";
+                }
+                return RedirectToAction("Users");
+            }
+            else
+            {
+                TempData["Message"] = "Silmek istediğiniz kullanıcının verisi hatalı!";
+                TempData["JS"] = "showError();";
+                return RedirectToAction("Users");
+            }
         }
         //
 
@@ -88,13 +160,13 @@ namespace WebKelimeOyunu.Controllers
                     TempData["Message"] = "Kelime ekleme işleminiz başarısız!";
                     TempData["JS"] = "showError();";
                 }
-                return RedirectToAction("FourWord");
+                return RedirectToAction("FourWordIndex");
             }
             else
             {
                 TempData["Message"] = "Silmek istediğiniz veri hatalı!";
                 TempData["JS"] = "showError();";
-                return RedirectToAction("ProductIndex");
+                return RedirectToAction("FourWordIndex");
             }
         }
         [HttpPost]
@@ -117,23 +189,22 @@ namespace WebKelimeOyunu.Controllers
                     TempData["Message"] = "Kelime güncelleme işleminiz başarısız!";
                     TempData["JS"] = "showError();";
                 }
-                return RedirectToAction("FourWord");
+                return RedirectToAction("FourWordIndex");
             }
             else
             {
                 TempData["Message"] = "Güncellemek istediğiniz veri hatalı!";
                 TempData["JS"] = "showError();";
-                return RedirectToAction("FourWord");
+                return RedirectToAction("FourWordIndex");
             }
         }
         [HttpPost]
-        public IActionResult DeleteFourWord(FourWord fourWord)
+        public IActionResult DeleteFourWord(int fourWordID)
         {
             if (ModelState.IsValid)
             {
                 int request;
-                fourWord.ModifiedDate = DateTime.Now;
-                _unitOfWorkFour.RepositoryFour.Delete(fourWord);
+                _unitOfWorkFour.RepositoryFour.DeleteID(fourWordID);
                 request = HttpContext.Response.StatusCode;
                 if (request == 200)
                 {
@@ -146,22 +217,22 @@ namespace WebKelimeOyunu.Controllers
                     TempData["Message"] = "Kelime silme işleminiz başarısız!";
                     TempData["JS"] = "showError();";
                 }
-                return RedirectToAction("FourWord");
+                return RedirectToAction("FourWordIndex");
             }
             else
             {
-                TempData["Message"] = "silmek istediğiniz veri hatalı!";
+                TempData["Message"] = "Silmek istediğiniz veri hatalı!";
                 TempData["JS"] = "showError();";
-                return RedirectToAction("FourWord");
+                return RedirectToAction("FourWordIndex");
             }
         }
         public IActionResult FourWordIndex()
         {
             var allWordsWithFour = _unitOfWorkFour.RepositoryFour.GetAll();
-            var fourWordViewModel =  new FourWordViewModel
-          {
+            var fourWordViewModel = new FourWordViewModel
+            {
                 FourWords = allWordsWithFour
-          };
+            };
             return View(fourWordViewModel);
         }
         public IActionResult FourWordCreate()
@@ -199,13 +270,13 @@ namespace WebKelimeOyunu.Controllers
                     TempData["Message"] = "Kelime ekleme işleminiz başarısız!";
                     TempData["JS"] = "showError();";
                 }
-                return RedirectToAction("FiveWord");
+                return RedirectToAction("FiveWordIndex");
             }
             else
             {
-                TempData["Message"] = "Silmek istediğiniz veri hatalı!";
+                TempData["Message"] = "Eklemek istediğiniz veri hatalı!";
                 TempData["JS"] = "showError();";
-                return RedirectToAction("FiveWord");
+                return RedirectToAction("FiveWordIndex");
             }
         }
         [HttpPost]
@@ -218,7 +289,7 @@ namespace WebKelimeOyunu.Controllers
                 request = HttpContext.Response.StatusCode;
                 if (request == 200)
                 {
-                    TempData["Message"] = "Kelime GÜncelleme işleminiz başarılı!";
+                    TempData["Message"] = "Kelime Güncelleme işleminiz başarılı!";
                     TempData["JS"] = "showSuccess();";
                     _unitOfWorkFive.Complete();
                 }
@@ -227,22 +298,22 @@ namespace WebKelimeOyunu.Controllers
                     TempData["Message"] = "Kelime Güncelleme işleminiz başarısız!";
                     TempData["JS"] = "showError();";
                 }
-                return RedirectToAction("FiveWord");
+                return RedirectToAction("FiveWordIndex");
             }
             else
             {
-                TempData["Message"] = "Silmek güncelleme veri hatalı!";
+                TempData["Message"] = "Güncellemek güncelleme veri hatalı!";
                 TempData["JS"] = "showError();";
-                return RedirectToAction("FiveWord");
+                return RedirectToAction("FiveWordIndex");
             }
         }
         [HttpPost]
-        public IActionResult DeleteFiveWord(FifthWord fiveWord)
+        public IActionResult DeleteFiveWord(int fifthWordID)
         {
             if (ModelState.IsValid)
             {
                 int request;
-                _unitOfWorkFive.RepositoryFive.Delete(fiveWord);
+                _unitOfWorkFive.RepositoryFive.DeleteID(fifthWordID);
                 request = HttpContext.Response.StatusCode;
                 if (request == 200)
                 {
@@ -252,25 +323,25 @@ namespace WebKelimeOyunu.Controllers
                 }
                 else
                 {
-                    TempData["Message"] = "Kelime ekleme işleminiz başarısız!";
+                    TempData["Message"] = "Kelime silme işleminiz başarısız!";
                     TempData["JS"] = "showError();";
                 }
-                return RedirectToAction("FiveWord");
+                return RedirectToAction("FiveWordIndex");
             }
             else
             {
                 TempData["Message"] = "Silmek istediğiniz veri hatalı!";
                 TempData["JS"] = "showError();";
-                return RedirectToAction("FiveWord");
+                return RedirectToAction("FiveWordIndex");
             }
         }
         public IActionResult FiveWordIndex()
         {
             var allWordsWithFive = _unitOfWorkFive.RepositoryFive.GetAll();
-            var fiveWordViewModel =  new FiveWordViewModel
-          {
+            var fiveWordViewModel = new FiveWordViewModel
+            {
                 FifthWords = allWordsWithFive
-          };
+            };
             return View(fiveWordViewModel);
         }
         public IActionResult FiveWordCreate()
@@ -305,16 +376,16 @@ namespace WebKelimeOyunu.Controllers
                 }
                 else
                 {
-                    TempData["Message"] = "Ürün ekleme işleminiz başarısız!";
+                    TempData["Message"] = "Kelime ekleme işleminiz başarısız!";
                     TempData["JS"] = "showError();";
                 }
-                return RedirectToAction("SixWord");
+                return RedirectToAction("SixthWordIndex");
             }
             else
             {
-                TempData["Message"] = "Silmek istediğiniz veri hatalı!";
+                TempData["Message"] = "Eklemek istediğiniz veri hatalı!";
                 TempData["JS"] = "showError();";
-                return RedirectToAction("SixWord");
+                return RedirectToAction("SixthWordIndex");
             }
         }
         [HttpPost]
@@ -336,50 +407,50 @@ namespace WebKelimeOyunu.Controllers
                     TempData["Message"] = "Ürün ekleme işleminiz başarısız!";
                     TempData["JS"] = "showError();";
                 }
-                return RedirectToAction("SixWord");
+                return RedirectToAction("SixthWordIndex");
             }
             else
             {
                 TempData["Message"] = "Silmek istediğiniz veri hatalı!";
                 TempData["JS"] = "showError();";
-                return RedirectToAction("SixWord");
+                return RedirectToAction("SixthWordIndex");
             }
         }
         [HttpPost]
-        public IActionResult DeleteSixWord(SixthWord sixWord)
+        public IActionResult DeleteSixWord(int sixthWordID)
         {
             if (ModelState.IsValid)
             {
                 int request;
-                _unitOfWorkSix.RepositorySix.Delete(sixWord);
+                _unitOfWorkSix.RepositorySix.DeleteID(sixthWordID);
                 request = HttpContext.Response.StatusCode;
                 if (request == 200)
                 {
-                    TempData["Message"] = "Kelime Silme işleminiz başarılı!";
+                    TempData["Message"] = "Kelime silme işleminiz başarılı!";
                     TempData["JS"] = "showSuccess();";
                     _unitOfWorkSix.Complete();
                 }
                 else
                 {
-                    TempData["Message"] = "Ürün ekleme işleminiz başarısız!";
+                    TempData["Message"] = "Kelime silme işleminiz başarısız!";
                     TempData["JS"] = "showError();";
                 }
-                return RedirectToAction("SixWord");
+                return RedirectToAction("SixthWordIndex");
             }
             else
             {
                 TempData["Message"] = "Silmek istediğiniz veri hatalı!";
                 TempData["JS"] = "showError();";
-                return RedirectToAction("SixWord");
+                return RedirectToAction("SixthWordIndex");
             }
         }
         public IActionResult SixthWordIndex()
         {
             var allWordsWithSixth = _unitOfWorkSix.RepositorySix.GetAll();
-            var sixWordViewModel =  new SixthWordViewModel
-          {
+            var sixWordViewModel = new SixthWordViewModel
+            {
                 SixthWords = allWordsWithSixth
-          };
+            };
             return View(sixWordViewModel);
         }
         public IActionResult SixthWordCreate()
@@ -414,16 +485,16 @@ namespace WebKelimeOyunu.Controllers
                 }
                 else
                 {
-                    TempData["Message"] = "Ürün ekleme işleminiz başarısız!";
+                    TempData["Message"] = "Kelime ekleme işleminiz başarısız!";
                     TempData["JS"] = "showError();";
                 }
-                return RedirectToAction("SevenWord");
+                return RedirectToAction("SevenWordIndex");
             }
             else
             {
-                TempData["Message"] = "Silmek istediğiniz veri hatalı!";
+                TempData["Message"] = "Eklemek istediğiniz veri hatalı!";
                 TempData["JS"] = "showError();";
-                return RedirectToAction("SevenWord");
+                return RedirectToAction("SevenWordIndex");
             }
         }
 
@@ -437,60 +508,60 @@ namespace WebKelimeOyunu.Controllers
                 request = HttpContext.Response.StatusCode;
                 if (request == 200)
                 {
-                    TempData["Message"] = "Kelime ekleme işleminiz başarılı!";
+                    TempData["Message"] = "Kelime güncelleme işleminiz başarılı!";
                     TempData["JS"] = "showSuccess();";
                     _unitOfWorkSeven.Complete();
                 }
                 else
                 {
-                    TempData["Message"] = "Ürün ekleme işleminiz başarısız!";
+                    TempData["Message"] = "Kelime güncelleme işleminiz başarısız!";
                     TempData["JS"] = "showError();";
                 }
-                return RedirectToAction("SevenWord");
+                return RedirectToAction("SevenWordIndex");
             }
             else
             {
-                TempData["Message"] = "Silmek istediğiniz veri hatalı!";
+                TempData["Message"] = "Güncellemek istediğiniz veri hatalı!";
                 TempData["JS"] = "showError();";
-                return RedirectToAction("SevenWord");
+                return RedirectToAction("SevenWordIndex");
             }
         }
 
         [HttpPost]
-        public IActionResult DeleteSevenWord(SevenWord sevenWord)
+        public IActionResult DeleteSevenWord(int sevenWordID)
         {
             if (ModelState.IsValid)
             {
                 int request;
-                _unitOfWorkSeven.RepositorySeven.Delete(sevenWord);
+                _unitOfWorkSeven.RepositorySeven.DeleteID(sevenWordID);
                 request = HttpContext.Response.StatusCode;
                 if (request == 200)
                 {
-                    TempData["Message"] = "Kelime ekleme işleminiz başarılı!";
+                    TempData["Message"] = "Kelime silme işleminiz başarılı!";
                     TempData["JS"] = "showSuccess();";
                     _unitOfWorkSeven.Complete();
                 }
                 else
                 {
-                    TempData["Message"] = "Ürün ekleme işleminiz başarısız!";
+                    TempData["Message"] = "Kelime silme işleminiz başarısız!";
                     TempData["JS"] = "showError();";
                 }
-                return RedirectToAction("SevenWord");
+                return RedirectToAction("SevenWordIndex");
             }
             else
             {
                 TempData["Message"] = "Silmek istediğiniz veri hatalı!";
                 TempData["JS"] = "showError();";
-                return RedirectToAction("SevenWord");
+                return RedirectToAction("SevenWordIndex");
             }
         }
         public IActionResult SevenWordIndex()
         {
             var allWordsWithSeven = _unitOfWorkSeven.RepositorySeven.GetAll();
-            var sevenWordViewModel =  new SevenWordViewModel
-          {
+            var sevenWordViewModel = new SevenWordViewModel
+            {
                 SevenWords = allWordsWithSeven
-          };
+            };
             return View(sevenWordViewModel);
         }
         public IActionResult SevenWordCreate()
@@ -525,16 +596,16 @@ namespace WebKelimeOyunu.Controllers
                 }
                 else
                 {
-                    TempData["Message"] = "Ürün ekleme işleminiz başarısız!";
+                    TempData["Message"] = "Kelime ekleme işleminiz başarısız!";
                     TempData["JS"] = "showError();";
                 }
-                return RedirectToAction("EightWord");
+                return RedirectToAction("EightWordIndex");
             }
             else
             {
-                TempData["Message"] = "Silmek istediğiniz veri hatalı!";
+                TempData["Message"] = "Eklemek istediğiniz veri hatalı!";
                 TempData["JS"] = "showError();";
-                return RedirectToAction("EightWord");
+                return RedirectToAction("EightWordIndex");
             }
         }
         [HttpPost]
@@ -547,61 +618,61 @@ namespace WebKelimeOyunu.Controllers
                 request = HttpContext.Response.StatusCode;
                 if (request == 200)
                 {
-                    TempData["Message"] = "Kelime ekleme işleminiz başarılı!";
+                    TempData["Message"] = "Kelime güncelleme işleminiz başarılı!";
                     TempData["JS"] = "showSuccess();";
                     _unitOfWorkEight.Complete();
                 }
                 else
                 {
-                    TempData["Message"] = "Ürün ekleme işleminiz başarısız!";
+                    TempData["Message"] = "Kelime güncelleme işleminiz başarısız!";
                     TempData["JS"] = "showError();";
                 }
-                return RedirectToAction("EightWord");
+                return RedirectToAction("EightWordIndex");
             }
             else
             {
-                TempData["Message"] = "Silmek istediğiniz veri hatalı!";
+                TempData["Message"] = "Güncellemek istediğiniz veri hatalı!";
                 TempData["JS"] = "showError();";
-                return RedirectToAction("EightWord");
+                return RedirectToAction("EightWordIndex");
             }
         }
 
         [HttpPost]
-        public IActionResult DeleteEightWord(EightWord eightWord)
+        public IActionResult DeleteEightWord(int eightWordID)
         {
             if (ModelState.IsValid)
             {
                 int request;
-                _unitOfWorkEight.RepositoryEight.Delete(eightWord);
+                _unitOfWorkEight.RepositoryEight.DeleteID(eightWordID);
                 request = HttpContext.Response.StatusCode;
                 if (request == 200)
                 {
-                    TempData["Message"] = "Kelime ekleme işleminiz başarılı!";
+                    TempData["Message"] = "Kelime silme işleminiz başarılı!";
                     TempData["JS"] = "showSuccess();";
                     _unitOfWorkEight.Complete();
                 }
                 else
                 {
-                    TempData["Message"] = "Ürün ekleme işleminiz başarısız!";
+                    TempData["Message"] = "Kelime silme işleminiz başarısız!";
                     TempData["JS"] = "showError();";
                 }
-                return RedirectToAction("EightWord");
+                return RedirectToAction("EightWordIndex");
             }
             else
             {
                 TempData["Message"] = "Silmek istediğiniz veri hatalı!";
                 TempData["JS"] = "showError();";
-                return RedirectToAction("EightWord");
+                return RedirectToAction("EightWordIndex");
             }
         }
 
         public IActionResult EightWordIndex()
         {
             var allWordsWithEight = _unitOfWorkEight.RepositoryEight.GetAll();
-            var eightWordViewModel =  new EightWordViewModel
-          {
+            var eightWordViewModel = new EightWordViewModel
+            {
                 EightWords = allWordsWithEight
-          };
+            };
             return View(eightWordViewModel);
         }
         public IActionResult EightWordCreate()
@@ -636,16 +707,16 @@ namespace WebKelimeOyunu.Controllers
                 }
                 else
                 {
-                    TempData["Message"] = "Ürün ekleme işleminiz başarısız!";
+                    TempData["Message"] = "Kelime ekleme işleminiz başarısız!";
                     TempData["JS"] = "showError();";
                 }
-                return RedirectToAction("NineWord");
+                return RedirectToAction("NineWordIndex");
             }
             else
             {
-                TempData["Message"] = "Silmek istediğiniz veri hatalı!";
+                TempData["Message"] = "Eklemek istediğiniz veri hatalı!";
                 TempData["JS"] = "showError();";
-                return RedirectToAction("NineWord");
+                return RedirectToAction("NineWordIndex");
             }
         }
 
@@ -659,51 +730,51 @@ namespace WebKelimeOyunu.Controllers
                 request = HttpContext.Response.StatusCode;
                 if (request == 200)
                 {
-                    TempData["Message"] = "Kelime ekleme işleminiz başarılı!";
+                    TempData["Message"] = "Kelime güncelleme işleminiz başarılı!";
                     TempData["JS"] = "showSuccess();";
                     _unitOfWorkNine.Complete();
                 }
                 else
                 {
-                    TempData["Message"] = "Ürün ekleme işleminiz başarısız!";
+                    TempData["Message"] = "Kelime güncelleme işleminiz başarısız!";
                     TempData["JS"] = "showError();";
                 }
-                return RedirectToAction("NineWord");
+                return RedirectToAction("NineWordIndex");
             }
             else
             {
-                TempData["Message"] = "Silmek istediğiniz veri hatalı!";
+                TempData["Message"] = "Güncellemek istediğiniz veri hatalı!";
                 TempData["JS"] = "showError();";
-                return RedirectToAction("NineWord");
+                return RedirectToAction("NineWordIndex");
             }
         }
 
         [HttpPost]
-        public IActionResult DeleteNineWord(NineWord nineWord)
+        public IActionResult DeleteNineWord(int nineWordID)
         {
             if (ModelState.IsValid)
             {
                 int request;
-                _unitOfWorkNine.RepositoryNine.Delete(nineWord);
+                _unitOfWorkNine.RepositoryNine.DeleteID(nineWordID);
                 request = HttpContext.Response.StatusCode;
                 if (request == 200)
                 {
-                    TempData["Message"] = "Kelime ekleme işleminiz başarılı!";
+                    TempData["Message"] = "Kelime silme işleminiz başarılı!";
                     TempData["JS"] = "showSuccess();";
                     _unitOfWorkNine.Complete();
                 }
                 else
                 {
-                    TempData["Message"] = "Ürün ekleme işleminiz başarısız!";
+                    TempData["Message"] = "Kelime silme işleminiz başarısız!";
                     TempData["JS"] = "showError();";
                 }
-                return RedirectToAction("NineWord");
+                return RedirectToAction("NineWordIndex");
             }
             else
             {
                 TempData["Message"] = "Silmek istediğiniz veri hatalı!";
                 TempData["JS"] = "showError();";
-                return RedirectToAction("NineWord");
+                return RedirectToAction("NineWordIndex");
             }
         }
 
@@ -711,9 +782,9 @@ namespace WebKelimeOyunu.Controllers
         {
             var allWordsWithNine = _unitOfWorkNine.RepositoryNine.GetAll();
             var nineWordViewModel = new NineWordViewModel
-          {
+            {
                 NineWords = allWordsWithNine
-          };
+            };
             return View(nineWordViewModel);
         }
         public IActionResult NineWordCreate()
@@ -742,22 +813,22 @@ namespace WebKelimeOyunu.Controllers
                 request = HttpContext.Response.StatusCode;
                 if (request == 200)
                 {
-                    TempData["Message"] = "Ürün ekleme işleminiz başarılı!";
+                    TempData["Message"] = "Kelime ekleme işleminiz başarılı!";
                     TempData["JS"] = "showSuccess();";
                     _unitOfWorkTen.Complete();
                 }
                 else
                 {
-                    TempData["Message"] = "Ürün ekleme işleminiz başarısız!";
+                    TempData["Message"] = "Kelime ekleme işleminiz başarısız!";
                     TempData["JS"] = "showError();";
                 }
-                return RedirectToAction("TenWord");
+                return RedirectToAction("TenWordIndex");
             }
             else
             {
-                TempData["Message"] = "Silmek istediğiniz veri hatalı!";
+                TempData["Message"] = "Eklemek istediğiniz veri hatalı!";
                 TempData["JS"] = "showError();";
-                return RedirectToAction("TenWord");
+                return RedirectToAction("TenWordIndex");
             }
         }
 
@@ -771,61 +842,61 @@ namespace WebKelimeOyunu.Controllers
                 request = HttpContext.Response.StatusCode;
                 if (request == 200)
                 {
-                    TempData["Message"] = "Ürün ekleme işleminiz başarılı!";
+                    TempData["Message"] = "Güncellemek ekleme işleminiz başarılı!";
                     TempData["JS"] = "showSuccess();";
                     _unitOfWorkTen.Complete();
                 }
                 else
                 {
-                    TempData["Message"] = "Ürün ekleme işleminiz başarısız!";
+                    TempData["Message"] = "Güncellemek ekleme işleminiz başarısız!";
                     TempData["JS"] = "showError();";
                 }
-                return RedirectToAction("TenWord");
+                return RedirectToAction("TenWordIndex");
             }
             else
             {
-                TempData["Message"] = "Silmek istediğiniz veri hatalı!";
+                TempData["Message"] = "Güncellemek istediğiniz veri hatalı!";
                 TempData["JS"] = "showError();";
-                return RedirectToAction("TenWord");
+                return RedirectToAction("TenWordIndex");
             }
         }
 
         [HttpPost]
-        public IActionResult DeleteTenWord(TenWord tenWord)
+        public IActionResult DeleteTenWord(int tenWordID)
         {
             if (ModelState.IsValid)
             {
                 int request;
-                _unitOfWorkTen.RepositoryTen.Delete(tenWord);
+                _unitOfWorkTen.RepositoryTen.DeleteID(tenWordID);
                 request = HttpContext.Response.StatusCode;
                 if (request == 200)
                 {
-                    TempData["Message"] = "Ürün ekleme işleminiz başarılı!";
+                    TempData["Message"] = "Kelime silme işleminiz başarılı!";
                     TempData["JS"] = "showSuccess();";
                     _unitOfWorkTen.Complete();
                 }
                 else
                 {
-                    TempData["Message"] = "Ürün ekleme işleminiz başarısız!";
+                    TempData["Message"] = "Kelime silme işleminiz başarısız!";
                     TempData["JS"] = "showError();";
                 }
-                return RedirectToAction("TenWord");
+                return RedirectToAction("TenWordIndex");
             }
             else
             {
                 TempData["Message"] = "Silmek istediğiniz veri hatalı!";
                 TempData["JS"] = "showError();";
-                return RedirectToAction("TenWord");
+                return RedirectToAction("TenWordIndex");
             }
         }
 
         public IActionResult TenWordIndex()
         {
             var allWordsWithTen = _unitOfWorkTen.RepositoryTen.GetAll();
-            var tenWordViewModel =  new TenWordViewModel
-          {
+            var tenWordViewModel = new TenWordViewModel
+            {
                 TenWords = allWordsWithTen
-          };
+            };
             return View(tenWordViewModel);
         }
         public IActionResult TenWordCreate()
@@ -844,13 +915,43 @@ namespace WebKelimeOyunu.Controllers
         /////+10-10-10-
 
         //
+
+        [HttpPost]
+        public IActionResult DeleteScore(int ID)
+        {
+            if (ModelState.IsValid)
+            {
+                int request;
+                _unitOfWorkScoreTable.RepositoryScoreTable.DeleteID(ID);
+                request = HttpContext.Response.StatusCode;
+                if (request == 200)
+                {
+                    TempData["Message"] = "Skor silme işleminiz başarılı!";
+                    TempData["JS"] = "showSuccess();";
+                    _unitOfWorkScoreTable.Complete();
+                }
+                else
+                {
+                    TempData["Message"] = "Skor silme işleminiz başarısız!";
+                    TempData["JS"] = "showError();";
+                }
+                return RedirectToAction("ScoreTable");
+            }
+            else
+            {
+                TempData["Message"] = "Silmek istediğiniz veri hatalı!";
+                TempData["JS"] = "showError();";
+                return RedirectToAction("ScoreTable");
+            }
+        }
+
         public IActionResult ScoreTable()
         {
-            var allScore = _unitOfWorkScoreTable.RepositoryScoreTable.GetAll();
+            var allScore = _unitOfWorkScoreTable.RepositoryScoreTable.ScoreTablesWithUser();
             var scoreTableViewModel = new ScoreTableViewModel
-          {
+            {
                 ScoreTables = allScore
-          };
+            };
             return View(scoreTableViewModel);
         }
         //

@@ -15,25 +15,25 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @foreach(var item in Model.FifthWordOnly)
             {
-            <input asp-for="@item.FifthWordID" hidden value="@item.FifthWordID" />
+            <input asp-for="@item.FifthWordID" type="hidden" name="FifthWordID" value="@item.FifthWordID" />
             <div class="form-group">
                 <label asp-for="@item.FifthWordQuestion" class="control-label"></label>
-                <input asp-for="@item.FifthWordQuestion"  value="@item.FifthWordQuestion" class="form-control" />
+                <input asp-for="@item.FifthWordQuestion" name="FifthWordQuestion" value="@item.FifthWordQuestion" class="form-control" />
                 <span asp-validation-for="@item.FifthWordQuestion" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="@item.FifthWordAnswer" class="control-label"></label>
-                <input asp-for="@item.FifthWordAnswer" value="@item.FifthWordAnswer" class="form-control" />
+                <input asp-for="@item.FifthWordAnswer" name="FifthWordAnswer" value="@item.FifthWordAnswer" class="form-control" />
                 <span asp-validation-for="@item.FifthWordAnswer" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="@item.FifthWordData" class="control-label"></label>
-                <input asp-for="@item.FifthWordData" value="@item.FifthWordData" class="form-control" />
+                <input asp-for="@item.FifthWordData" name="FifthWordData" value="@item.FifthWordData" class="form-control" />
                 <span asp-validation-for="@item.FifthWordData" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="@item.FifthWordScore" class="control-label"></label>
-                <input asp-for="@item.FifthWordScore" value="@item.FifthWordScore" class="form-control" />
+                <input asp-for="@item.FifthWordScore" name="FifthWordScore" value="@item.FifthWordScore" class="form-control" />
                 <span asp-validation-for="@item.FifthWordScore" class="text-danger"></span>
             </div>
             <div class="form-group">

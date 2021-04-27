@@ -12,25 +12,25 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @foreach (var item in Model.NineWordOnly)
             {
-                <input asp-for="@item.NineWordID" hidden value="@item.NineWordID" />
+                <input asp-for="@item.NineWordID" type="hidden" value="@item.NineWordID" />
                 <div class="form-group">
                     <label asp-for="@item.NineWordQuestion" class="control-label"></label>
-                    <input asp-for="@item.NineWordQuestion" value="@item.NineWordQuestion" class="form-control" />
+                    <input asp-for="@item.NineWordQuestion" name="NineWordQuestion" value="@item.NineWordQuestion" class="form-control" />
                     <span asp-validation-for="@item.NineWordQuestion" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="@item.NineWordAnswer" class="control-label"></label>
-                    <input asp-for="@item.NineWordAnswer" value="@item.NineWordAnswer" class="form-control" />
+                    <input asp-for="@item.NineWordAnswer" name="NineWordAnswer" value="@item.NineWordAnswer" class="form-control" />
                     <span asp-validation-for="@item.NineWordAnswer" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="@item.NineWordData" class="control-label"></label>
-                    <input asp-for="@item.NineWordData" value="@item.NineWordData" class="form-control" />
+                    <input asp-for="@item.NineWordData" name="NineWordData" value="@item.NineWordData" class="form-control" />
                     <span asp-validation-for="@item.NineWordData" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="@item.NineWordScore" class="control-label"></label>
-                    <input asp-for="@item.NineWordScore" value="@item.NineWordScore" class="form-control" />
+                    <input asp-for="@item.NineWordScore" name="NineWordScore" value="@item.NineWordScore" class="form-control" />
                     <span asp-validation-for="@item.NineWordScore" class="text-danger"></span>
                 </div>
                 <div class="form-group">
