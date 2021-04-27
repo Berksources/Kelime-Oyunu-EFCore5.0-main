@@ -47,10 +47,10 @@ namespace Entity.KelimeOyunu
             builder.HasData(new User
             {//Admin
                 UserID = 1,
-                UserName = "Berk",
-                UserSurname = "Garip",
-                UserPassword = "berk2222",
-                UserEMail = "berk.garip@hbksoftware.com",
+                UserName = "Admin",
+                UserSurname = "Admin",
+                UserPassword = "AdminGitHub",
+                UserEMail = "AdminPaneli@gmail.com",
                 UserIsActive = true,
                 UserIsEmailConfirmed = true,
                 CreatedDate = DateTime.Now,
@@ -61,7 +61,7 @@ namespace Entity.KelimeOyunu
                 UserID = 2,
                 UserName = "Kullanici",
                 UserSurname = "Kullanici",
-                UserPassword = "berk2222",
+                UserPassword = "KullaniciGitHub",
                 UserEMail = "Kullanici@gmail.com",
                 UserIsActive = true,
                 UserIsEmailConfirmed = true,
